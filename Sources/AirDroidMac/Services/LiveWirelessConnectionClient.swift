@@ -19,6 +19,18 @@ private struct UnavailableWirelessConnectionClient: WirelessConnectionClient {
     func connect(candidate: WirelessConnectionCandidate) throws -> WirelessConnection {
         throw WirelessConnectionUnavailableError(message: message)
     }
+
+    func connectOverTCPIP(device: DeviceIdentity) throws -> WirelessConnection {
+        throw WirelessConnectionUnavailableError(message: message)
+    }
+
+    func openDeveloperOptions(device: DeviceIdentity) throws {
+        throw WirelessConnectionUnavailableError(message: message)
+    }
+
+    func disableTCPIP(device: DeviceIdentity) throws {
+        throw WirelessConnectionUnavailableError(message: message)
+    }
 }
 
 private struct WirelessConnectionUnavailableError: LocalizedError {

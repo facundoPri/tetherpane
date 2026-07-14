@@ -47,12 +47,12 @@ private struct NoDeviceDetailView: View {
 
     var body: some View {
         Form {
-            Section("Cable-free setup") {
+            Section("Wireless Debugging — no cable") {
                 Label("Waiting for Android Wireless Debugging", systemImage: "wifi")
                 Text("1. Put the phone and Mac on the same Wi-Fi network.")
                 Text("2. On Android, enable Developer options → Wireless debugging.")
                 Text("3. Choose Pair device with pairing code. This screen refreshes automatically and will show the code field.")
-                Text("You may unplug USB before starting. Same Wi-Fi carries the connection; Android's one-time system pairing authorizes ADB for scrcpy.")
+                Text("Android must show and approve the system pairing. No Android companion app is required.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
 
@@ -61,6 +61,13 @@ private struct NoDeviceDetailView: View {
                         .font(.callout)
                         .foregroundStyle(.red)
                 }
+            }
+
+            Section("USB once — until restart") {
+                Label("Connect and authorize the phone over USB", systemImage: "cable.connector")
+                Text("Select the USB device in the sidebar, then choose Enable Wi-Fi until phone restarts. Once the Wi-Fi device appears, the cable can be removed.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
             }
 
             PairingGuidanceView(store: store)

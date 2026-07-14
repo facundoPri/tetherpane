@@ -59,4 +59,4 @@ else
 fi
 
 heading "status"
-echo "This command is read-only. Missing Android packages or licenses: run make bootstrap in an interactive terminal."
+echo "This command is read-only. If Android packages or license records are reported missing above, run make bootstrap in an interactive terminal."

@@ -1,6 +1,6 @@
 # AirDroid scrcpy spike
 
-This is a native macOS/Android monorepo spike. The macOS control center is SwiftUI and launches the stock, separately-windowed `scrcpy` 4.1 client. The Android companion is Kotlin/Compose onboarding and status UI; it **cannot** grant, replace, or silently authorize ADB.
+This is a native SwiftUI macOS control center that launches the stock, separately-windowed `scrcpy` 4.1 client. **Mirroring does not require an Android companion app.** The Kotlin/Compose shell remains in the repository as an optional development artifact, but installing it is not part of either supported connection flow and it cannot grant, replace, or silently authorize ADB.
 
 `AirDroid` is an internal codename only. This repository deliberately excludes an embedded video renderer, a scrcpy protocol implementation, distribution packaging, signing, notarization, and public-release naming work.
 
@@ -24,9 +24,13 @@ This is a native macOS/Android monorepo spike. The macOS control center is Swift
 
 `make android-emulator` enables Developer options only inside its disposable AVD, so the QA script can verify the companion's settings action after the app's documented first step. It never changes a connected physical device's Developer options or ADB authorization.
 
-## Cable-free Wireless Debugging
+## Wi-Fi mirroring
 
-The normal Wi-Fi flow does not require an initial USB connection. Stock scrcpy uses ADB, so Android must still authorize this Mac once through the system Wireless Debugging UI; merely sharing an SSID is not sufficient for first-time trust.
+Stock scrcpy uses ADB, so merely sharing an SSID is not sufficient. The Mac app supports two honest setup paths.
+
+### Wireless Debugging — recommended
+
+This path does not require an initial USB connection. Android must visibly authorize the Mac through its system Wireless Debugging UI. Pairing is normally remembered, but Android may expire or revoke inactive host keys, so re-pairing remains a supported recovery path.
 
 1. Put the Mac and Android device on the same Wi-Fi network.
 2. On Android, enable Developer options and turn on **Wireless debugging**.
@@ -37,7 +41,22 @@ The normal Wi-Fi flow does not require an initial USB connection. Stock scrcpy u
 
 Pairing codes are sent to `adb` through standard input, never placed in process arguments, logged, or persisted. The app rediscovers dynamic ports instead of saving them as device identity.
 
-QR remains a secondary option. Generate it on the Mac, then scan it only through **Wireless debugging → Pair device with QR code**. Do not use the regular Camera app, Google Lens, or the AirDroid companion: the ADB payload intentionally uses a `WIFI:` envelope, so a generic scanner may try to configure a network and cannot invoke Android's privileged ADB pairing service. Guest/corporate Wi-Fi may also block mDNS or isolate devices; both devices must be on a LAN that permits peer discovery and traffic.
+When a phone is already authorized over USB, **Open Developer Options on phone** asks Android to show the public Developer Options screen on that exact device. Android still requires the user to turn on Wireless debugging and approve pairing manually; the Mac app never attempts a hidden settings toggle.
+
+### Use USB once — until the phone restarts
+
+For users who do not want to leave Wireless Debugging enabled, connect and authorize the phone over USB, select it in the sidebar, then choose **Enable Wi-Fi until phone restarts**. The app:
+
+1. Reads the selected phone's current Wi-Fi IPv4 address through its authorized USB transport.
+2. Runs `adb -s <exact-usb-serial> tcpip 5555`.
+3. Connects `adb` to `<phone-ip>:5555`, verifies that exact wireless serial, and selects it.
+4. Tells the user when the cable can be removed.
+
+This classic TCP/IP mode normally ends when the phone restarts or its ADB/network state resets, so the USB bootstrap must then be repeated. Use it only on a trusted private LAN: it exposes an ADB listener on TCP port 5555 and classic ADB TCP/IP traffic is not encrypted. Guest/corporate Wi-Fi may block discovery or peer traffic.
+
+Selecting the **Wi-Fi · until restart** device exposes **Turn off USB-assisted Wi-Fi**. That action runs `adb -s <exact-wireless-serial> usb`, which closes only the phone's legacy TCP listener, then removes the stale host transport with an exact `adb disconnect`. Simply disconnecting the Mac would not close the listener, and Android's separate Wireless Debugging setting is unchanged.
+
+The unreliable QR experiment was removed from the product UI. Pairing-code setup is the maintained Wireless Debugging path.
 
 See [Stock scrcpy 4.1 over Android Wireless Debugging](docs/research/stock-scrcpy-wireless-debugging.md) for the primary-source protocol and platform constraints.
 
@@ -67,6 +86,6 @@ The Android versions are compatibility-first: AGP 9.2 requires Gradle 9.4.1+, Bu
 
 ## Testing seams
 
-Tests cross only these public seams: `DeviceDiscovery`, `PairingClient`, `WirelessConnectionClient`, `WirelessQRCodePairingSession`, `MirroringEngine`, `ScrcpyCommandBuilder`, Android onboarding/settings, and the root command interface. System process, binary lookup, filesystem, and Android settings adapters are the true system edges; views consume typed state, not raw command output.
+Tests cross only these public seams: `DeviceDiscovery`, `PairingClient`, `WirelessConnectionClient`, `MirroringEngine`, `ScrcpyCommandBuilder`, optional Android onboarding/settings, and the root command interface. System process, binary lookup, filesystem, and Android settings adapters are the true system edges; views consume typed state, not raw command output.
 
 The active Command Line Tools-only Swift toolchain does not expose XCTest or Swift Testing, so the Swift seam contracts are a SwiftPM executable (`AirDroidMacSeamTests`) run by `make macos-test`. This is a real failing-process contract runner, not a zero-test `swift test` result.

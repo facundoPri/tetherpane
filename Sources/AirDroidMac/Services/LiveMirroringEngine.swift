@@ -17,6 +17,8 @@ private final class UnavailableMirroringEngine: MirroringEngine {
     private let message: String
     private(set) var state: MirroringSessionState = .idle
     var stateDidChange: ((MirroringSessionState) -> Void)?
+    private(set) var diagnostics = ScrcpyDiagnostics()
+    var diagnosticsDidChange: ((ScrcpyDiagnostics) -> Void)?
 
     init(message: String) {
         self.message = message

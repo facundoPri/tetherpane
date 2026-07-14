@@ -25,7 +25,7 @@ struct WirelessCandidateDetailView: View {
                 }
             }
 
-            Section("Pair with code — recommended") {
+            Section("Pair with code") {
                 Text("On the phone, open Wireless Debugging and choose Pair device with pairing code. Keep that system dialog open; this Mac checks for it automatically.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
@@ -59,48 +59,10 @@ struct WirelessCandidateDetailView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-
-            Section("QR pairing — Android system scanner only") {
-                if let session = store.qrPairingSession {
-                    HStack(alignment: .top, spacing: 24) {
-                        WirelessQRCodeView(payload: session.payload)
-
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("On the phone:")
-                                .font(.headline)
-                            Text("1. Open Settings → System → Developer options → Wireless debugging.")
-                            Text("2. Choose Pair device with QR code.")
-                            Text("3. Scan this code. AirDroid will detect, pair, and select the Wi-Fi device automatically.")
-                            Text("Do not use the regular Camera app or the AirDroid companion: they cannot authorize ADB and may interpret this as a Wi-Fi network.")
-                                .font(.callout)
-                                .foregroundStyle(.orange)
-                            Text("Keep this screen open while pairing. No USB cable is required.")
-                                .font(.callout)
-                                .foregroundStyle(.secondary)
-                            Button("Cancel QR pairing", role: .cancel) {
-                                store.cancelQRCodePairing()
-                            }
-                        }
-                    }
-                } else {
-                    Text("Use this only from Android's built-in Wireless Debugging → Pair device with QR code scanner. A normal camera sees the shared WIFI envelope and may try to join a network instead.")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                    Button("Generate system-scanner QR code", systemImage: "qrcode") {
-                        store.beginQRCodePairing(for: candidate)
-                    }
-                }
-            }
         }
         .formStyle(.grouped)
         .padding()
         .navigationTitle("Wi-Fi device")
-        .task(id: store.qrPairingSession?.id) {
-            while store.qrPairingSession != nil, !Task.isCancelled {
-                store.continueQRCodePairing()
-                try? await Task.sleep(for: .seconds(1))
-            }
-        }
     }
 
     private var matchingPairingCandidates: [PairingCandidate] {

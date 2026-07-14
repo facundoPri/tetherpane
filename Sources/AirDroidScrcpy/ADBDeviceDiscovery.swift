@@ -63,9 +63,13 @@ public struct ADBDeviceDiscovery<Runner: CommandRunning>: DeviceDiscovery {
     private func command(arguments: [String]) throws -> CommandResult {
         let result = try runner.run(executable: adbPath, arguments: arguments)
         guard result.exitStatus == 0 else {
+            let reportedMessage = result.stderr.isEmpty ? result.stdout : result.stderr
+            let message = reportedMessage.trimmingCharacters(in: .whitespacesAndNewlines)
             throw ADBDeviceDiscoveryError.commandFailed(
                 arguments: arguments,
-                message: result.stderr.isEmpty ? result.stdout : result.stderr
+                message: message.isEmpty
+                    ? "command exited with status \(result.exitStatus) without output."
+                    : message
             )
         }
         return result

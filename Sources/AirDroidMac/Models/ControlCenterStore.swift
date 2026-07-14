@@ -9,6 +9,13 @@ enum DeviceSidebarSelection: Hashable {
     case wirelessCandidate(String)
 }
 
+private struct DiscoveryTelemetrySummary: Equatable {
+    let authorizedCount: Int
+    let deviceCount: Int
+    let pairingCandidateCount: Int
+    let wirelessCandidateCount: Int
+}
+
 @MainActor
 @Observable
 final class ControlCenterStore {
@@ -29,12 +36,12 @@ final class ControlCenterStore {
     var discoveryMessage: String?
     var sessionMessage: String?
     var sessionState: MirroringSessionState = .idle
+    var diagnostics = ScrcpyDiagnostics()
     var effectiveInvocation: ScrcpyInvocation?
     var pairingMessage: String?
     var wirelessConnectionMessage: String?
-    var qrPairingSession: WirelessQRCodePairingSession?
-    private var qrPairingTarget: WirelessConnectionCandidate?
     private var pendingPairingCandidate: PairingCandidate?
+    private var lastDiscoveryTelemetrySummary: DiscoveryTelemetrySummary?
     let resolvedADBPath: String
     let resolvedScrcpyPath: String
 
@@ -58,18 +65,31 @@ final class ControlCenterStore {
                 self?.sessionMessage = message
             }
         }
+        self.mirroring.diagnosticsDidChange = { [weak self] diagnostics in
+            self?.diagnostics = diagnostics
+        }
     }
 
     func refreshDevices() {
-        logger.info("device discovery requested")
+        logger.debug("device discovery poll requested")
         do {
+            let wasFailing = discoveryMessage != nil
             let snapshot = try discovery.discover()
             devices = snapshot.devices
             pairingCandidates = snapshot.pairingCandidates
             wirelessConnectionCandidates = snapshot.wirelessConnectionCandidates
             discoveryMessage = nil
             let authorizedCount = devices.filter { $0.state == .authorized }.count
-            logger.info("device discovery completed authorized=\(authorizedCount, privacy: .public) total=\(self.devices.count, privacy: .public) pairingCandidates=\(self.pairingCandidates.count, privacy: .public) wirelessCandidates=\(self.wirelessConnectionCandidates.count, privacy: .public)")
+            let telemetrySummary = DiscoveryTelemetrySummary(
+                authorizedCount: authorizedCount,
+                deviceCount: devices.count,
+                pairingCandidateCount: pairingCandidates.count,
+                wirelessCandidateCount: wirelessConnectionCandidates.count
+            )
+            if wasFailing || telemetrySummary != lastDiscoveryTelemetrySummary {
+                logger.info("device discovery changed authorized=\(authorizedCount, privacy: .public) total=\(self.devices.count, privacy: .public) pairingCandidates=\(self.pairingCandidates.count, privacy: .public) wirelessCandidates=\(self.wirelessConnectionCandidates.count, privacy: .public)")
+                lastDiscoveryTelemetrySummary = telemetrySummary
+            }
 
             if let sidebarSelection, !selectionStillExists(sidebarSelection) {
                 self.sidebarSelection = nil
@@ -90,12 +110,15 @@ final class ControlCenterStore {
                 connectWirelessly(candidate: connectionCandidate)
             }
         } catch {
+            let shouldLogFailure = discoveryMessage == nil
             devices = []
             pairingCandidates = []
             wirelessConnectionCandidates = []
             sidebarSelection = nil
             discoveryMessage = error.localizedDescription
-            logger.error("device discovery failed")
+            if shouldLogFailure {
+                logger.error("device discovery failed")
+            }
         }
     }
 
@@ -178,6 +201,7 @@ final class ControlCenterStore {
         do {
             effectiveInvocation = try mirroring.start(configuration: configuration)
             sessionState = mirroring.state
+            diagnostics = mirroring.diagnostics
             if recordingURL != nil {
                 sessionMessage = "Recording will be written when this scrcpy session stops."
             } else if sessionMessage == nil {
@@ -235,47 +259,71 @@ final class ControlCenterStore {
         }
     }
 
-    func beginQRCodePairing(for candidate: WirelessConnectionCandidate) {
-        qrPairingTarget = candidate
-        qrPairingSession = WirelessQRCodePairingSessionFactory.make()
-        pairingMessage = "Waiting for the phone to scan the QR code."
-        logger.info("wireless QR pairing session started")
-    }
-
-    func cancelQRCodePairing() {
-        qrPairingSession = nil
-        qrPairingTarget = nil
-        pairingMessage = "QR pairing canceled."
-        logger.info("wireless QR pairing session canceled")
-    }
-
-    func continueQRCodePairing() {
-        guard let session = qrPairingSession,
-              let target = qrPairingTarget
-        else {
+    func connectOverTCPIP(from device: DiscoveredDevice) {
+        guard device.state == .authorized, device.transport == .usb else {
+            wirelessConnectionMessage = "Connect and authorize this phone over USB before using the until-restart Wi-Fi setup."
             return
         }
 
-        refreshDevices()
-        guard let candidate = pairingCandidates.first(where: {
-            $0.serviceName == session.serviceName && $0.host == target.host
-        }) else {
-            return
-        }
-
-        logger.info("wireless QR pairing service discovered")
+        logger.info("USB-bootstrapped TCP/IP connection requested")
+        wirelessConnectionMessage = "Enabling Wi-Fi on this USB connection…"
         do {
-            try pairing.pair(candidate: candidate, code: session.password)
-            qrPairingSession = nil
-            qrPairingTarget = nil
-            pairingMessage = "QR pairing succeeded. Connecting over Wi-Fi."
-            logger.info("wireless QR pairing completed")
-            finishPairing(candidate: candidate)
+            let connection = try wirelessConnection.connectOverTCPIP(device: device.identity)
+            refreshDevices()
+            if let connectedDevice = devices.first(where: {
+                $0.identity.serial == connection.deviceSerial && $0.state == .authorized
+            }) {
+                sidebarSelection = .device(connectedDevice.id)
+                wirelessConnectionMessage = "Connected over Wi-Fi. You can unplug USB now; repeat this setup after the phone restarts."
+                logger.info("USB-bootstrapped TCP/IP connection completed and exact device selected")
+            } else {
+                wirelessConnectionMessage = "ADB enabled Wi-Fi, but the exact wireless device is not visible yet. Keep USB attached and choose Refresh devices."
+                logger.error("USB-bootstrapped TCP/IP connection completed without exact device")
+            }
         } catch {
-            qrPairingSession = nil
-            qrPairingTarget = nil
-            pairingMessage = error.localizedDescription
-            logger.error("wireless QR pairing failed")
+            wirelessConnectionMessage = error.localizedDescription
+            logger.error("USB-bootstrapped TCP/IP connection failed")
+        }
+    }
+
+    func openDeveloperOptions(on device: DiscoveredDevice) {
+        guard device.state == .authorized, device.transport == .usb else {
+            wirelessConnectionMessage = "Connect and authorize this phone over USB before opening its Developer Options from the Mac."
+            return
+        }
+
+        logger.info("Developer Options launch requested")
+        do {
+            try wirelessConnection.openDeveloperOptions(device: device.identity)
+            wirelessConnectionMessage = "Developer Options opened on the phone. Android requires you to turn on Wireless debugging there manually."
+            logger.info("Developer Options launch completed")
+        } catch {
+            wirelessConnectionMessage = error.localizedDescription
+            logger.error("Developer Options launch failed")
+        }
+    }
+
+    func disableTCPIP(on device: DiscoveredDevice) {
+        guard device.state == .authorized,
+              device.transport == .wireless,
+              device.identity.serial.hasSuffix(":5555")
+        else {
+            wirelessConnectionMessage = "Select the Wi-Fi · until restart device before turning off its legacy listener."
+            return
+        }
+
+        logger.info("USB-bootstrapped TCP/IP disablement requested")
+        if isMirroring {
+            stopMirroring()
+        }
+        do {
+            try wirelessConnection.disableTCPIP(device: device.identity)
+            wirelessConnectionMessage = "USB-assisted Wi-Fi is off. Android's separate Wireless Debugging setting is unchanged. Connect USB again to re-enable this mode."
+            refreshDevices()
+            logger.info("USB-bootstrapped TCP/IP disablement completed")
+        } catch {
+            wirelessConnectionMessage = error.localizedDescription
+            logger.error("USB-bootstrapped TCP/IP disablement failed")
         }
     }
 

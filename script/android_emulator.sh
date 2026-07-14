@@ -23,6 +23,9 @@ if [[ ! -x "$avdmanager" ]]; then
   avdmanager="$(command -v avdmanager || true)"
 fi
 emulator="$ANDROID_SDK_ROOT/emulator/emulator"
+launch_label="com.facundopri.airdroid.emulator"
+emulator_log="${TMPDIR:-/tmp}/$AVD_NAME.log"
+emulator_error_log="${TMPDIR:-/tmp}/$AVD_NAME.error.log"
 
 if [[ -z "$avdmanager" || ! -x "$emulator" ]]; then
   echo "Android emulator tools are unavailable. Run make bootstrap." >&2
@@ -38,18 +41,41 @@ if ! "$avdmanager" list avd | grep -Fq "Name: $AVD_NAME"; then
   printf 'no\n' | "$avdmanager" create avd --force --name "$AVD_NAME" --package "$IMAGE_PACKAGE" --device "pixel_7"
 fi
 
-nohup "$emulator" "@$AVD_NAME" -no-snapshot -no-boot-anim >"${TMPDIR:-/tmp}/$AVD_NAME.log" 2>&1 < /dev/null &
-emulator_pid=$!
+find_running_serial() {
+  local candidate
+  while IFS= read -r candidate; do
+    if [[ "$("$adb" -s "$candidate" shell getprop ro.boot.qemu.avd_name 2>/dev/null | tr -d '\r')" == "$AVD_NAME" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done < <("$adb" devices | awk 'NR > 1 && $1 ~ /^emulator-/ && $2 == "device" { print $1 }')
+  return 1
+}
 
-serial=""
+serial="$(find_running_serial || true)"
+if [[ -z "$serial" ]]; then
+  if command -v launchctl >/dev/null 2>&1; then
+    launchctl remove "$launch_label" >/dev/null 2>&1 || true
+    launchctl submit \
+      -l "$launch_label" \
+      -o "$emulator_log" \
+      -e "$emulator_error_log" \
+      -- "$emulator" "@$AVD_NAME" -no-snapshot -no-boot-anim
+    emulator_process="launchd job $launch_label"
+  else
+    nohup "$emulator" "@$AVD_NAME" -no-snapshot -no-boot-anim >"$emulator_log" 2>"$emulator_error_log" < /dev/null &
+    emulator_process="pid $!"
+  fi
+fi
+
 for _ in $(seq 1 30); do
-  serial="$("$adb" devices | awk 'NR > 1 && $1 ~ /^emulator-/ && $2 == "device" { print $1; exit }')"
+  serial="$(find_running_serial || true)"
   [[ -n "$serial" ]] && break
   sleep 2
 done
 
 if [[ -z "$serial" ]]; then
-  echo "Emulator did not connect within 60 seconds. See ${TMPDIR:-/tmp}/$AVD_NAME.log (pid $emulator_pid)." >&2
+  echo "Emulator did not connect within 60 seconds. See $emulator_log and $emulator_error_log ($emulator_process)." >&2
   exit 1
 fi
 
@@ -60,7 +86,7 @@ for _ in $(seq 1 30); do
 done
 
 if [[ "$("$adb" -s "$serial" shell getprop sys.boot_completed | tr -d '\r')" != "1" ]]; then
-  echo "Emulator connected but did not finish booting. See ${TMPDIR:-/tmp}/$AVD_NAME.log." >&2
+  echo "Emulator connected but did not finish booting. See $emulator_log and $emulator_error_log." >&2
   exit 1
 fi
 

@@ -48,13 +48,23 @@ struct DeviceSidebar: View {
         case .authorized:
             switch device.transport {
             case .usb: "USB"
-            case .wireless: "Wi-Fi"
+            case .wireless: wirelessConnectionLabel(for: device)
             case .emulator: "Emulator"
             case .unknown: "Authorized"
             }
         case .offline: "Offline"
         case .unauthorized: "Authorize on phone"
         case let .unknown(value): value
+        }
+    }
+
+    private func wirelessConnectionLabel(for device: DiscoveredDevice) -> String {
+        if device.identity.serial.hasSuffix(":5555") {
+            "Wi-Fi · until restart"
+        } else if device.identity.serial.contains("_adb-tls-connect._tcp") {
+            "Wi-Fi · Wireless Debugging"
+        } else {
+            "Wi-Fi"
         }
     }
 }
