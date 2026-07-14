@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.facundopri.airdroid.companion"
+    namespace = "com.facundopri.tetherpane.companion"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.facundopri.airdroid.companion"
+        applicationId = "com.facundopri.tetherpane.companion"
         minSdk = 30
         targetSdk = 36
         versionCode = 1

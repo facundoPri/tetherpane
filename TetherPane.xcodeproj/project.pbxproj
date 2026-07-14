@@ -1,0 +1,342 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B00000000000000000000001 /* AirDroidMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000001 /* AirDroidMacApp.swift */; };
+		B00000000000000000000002 /* ControlCenterStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000002 /* ControlCenterStore.swift */; };
+		B00000000000000000000003 /* DeveloperToolInstallationGuidance.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000003 /* DeveloperToolInstallationGuidance.swift */; };
+		B00000000000000000000004 /* LiveDeviceDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000004 /* LiveDeviceDiscovery.swift */; };
+		B00000000000000000000005 /* LiveMirroringEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000005 /* LiveMirroringEngine.swift */; };
+		B00000000000000000000006 /* LivePairingClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000006 /* LivePairingClient.swift */; };
+		B00000000000000000000007 /* LiveWirelessConnectionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000007 /* LiveWirelessConnectionClient.swift */; };
+		B00000000000000000000008 /* RecordingDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000008 /* RecordingDestination.swift */; };
+		B00000000000000000000009 /* UIFixtureConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000009 /* UIFixtureConfiguration.swift */; };
+		B0000000000000000000000A /* AdvancedInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000000000000000000000A /* AdvancedInspector.swift */; };
+		B0000000000000000000000B /* ControlCenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000000000000000000000B /* ControlCenterView.swift */; };
+		B0000000000000000000000C /* DeviceSourceList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000000000000000000000C /* DeviceSourceList.swift */; };
+		B0000000000000000000000D /* NumberedSetupStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000000000000000000000D /* NumberedSetupStep.swift */; };
+		B0000000000000000000000E /* OneDeviceWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000000000000000000000E /* OneDeviceWorkspaceView.swift */; };
+		B0000000000000000000000F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000000000000000000000F /* SettingsView.swift */; };
+		B00000000000000000000010 /* WirelessSetupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000010 /* WirelessSetupSheet.swift */; };
+		B00000000000000000000100 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000100 /* Assets.xcassets */; };
+		B00000000000000000000101 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000101 /* PrivacyInfo.xcprivacy */; };
+		B00000000000000000000200 /* AirDroidDomain in Frameworks */ = {isa = PBXBuildFile; productRef = L00000000000000000000101 /* AirDroidDomain */; };
+		B00000000000000000000201 /* AirDroidScrcpy in Frameworks */ = {isa = PBXBuildFile; productRef = L00000000000000000000102 /* AirDroidScrcpy */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F00000000000000000000001 /* AirDroidMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/App/AirDroidMacApp.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000002 /* ControlCenterStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Models/ControlCenterStore.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000003 /* DeveloperToolInstallationGuidance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Services/DeveloperToolInstallationGuidance.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000004 /* LiveDeviceDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Services/LiveDeviceDiscovery.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000005 /* LiveMirroringEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Services/LiveMirroringEngine.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000006 /* LivePairingClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Services/LivePairingClient.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000007 /* LiveWirelessConnectionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Services/LiveWirelessConnectionClient.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000008 /* RecordingDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Services/RecordingDestination.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000009 /* UIFixtureConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Services/UIFixtureConfiguration.swift; sourceTree = SOURCE_ROOT; };
+		F0000000000000000000000A /* AdvancedInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/AdvancedInspector.swift; sourceTree = SOURCE_ROOT; };
+		F0000000000000000000000B /* ControlCenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/ControlCenterView.swift; sourceTree = SOURCE_ROOT; };
+		F0000000000000000000000C /* DeviceSourceList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/DeviceSourceList.swift; sourceTree = SOURCE_ROOT; };
+		F0000000000000000000000D /* NumberedSetupStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/NumberedSetupStep.swift; sourceTree = SOURCE_ROOT; };
+		F0000000000000000000000E /* OneDeviceWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/OneDeviceWorkspaceView.swift; sourceTree = SOURCE_ROOT; };
+		F0000000000000000000000F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/SettingsView.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000010 /* WirelessSetupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/WirelessSetupSheet.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000100 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Configuration/macOS/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000101 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Configuration/macOS/PrivacyInfo.xcprivacy; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000102 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Configuration/macOS/Info.plist; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000200 /* TetherPane.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TetherPane.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		P00000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B00000000000000000000200 /* AirDroidDomain in Frameworks */,
+				B00000000000000000000201 /* AirDroidScrcpy in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		G00000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				G00000000000000000000002 /* Application Sources */,
+				G00000000000000000000003 /* Configuration */,
+				G00000000000000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		G00000000000000000000002 /* Application Sources */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000001 /* AirDroidMacApp.swift */,
+				F00000000000000000000002 /* ControlCenterStore.swift */,
+				F00000000000000000000003 /* DeveloperToolInstallationGuidance.swift */,
+				F00000000000000000000004 /* LiveDeviceDiscovery.swift */,
+				F00000000000000000000005 /* LiveMirroringEngine.swift */,
+				F00000000000000000000006 /* LivePairingClient.swift */,
+				F00000000000000000000007 /* LiveWirelessConnectionClient.swift */,
+				F00000000000000000000008 /* RecordingDestination.swift */,
+				F00000000000000000000009 /* UIFixtureConfiguration.swift */,
+				F0000000000000000000000A /* AdvancedInspector.swift */,
+				F0000000000000000000000B /* ControlCenterView.swift */,
+				F0000000000000000000000C /* DeviceSourceList.swift */,
+				F0000000000000000000000D /* NumberedSetupStep.swift */,
+				F0000000000000000000000E /* OneDeviceWorkspaceView.swift */,
+				F0000000000000000000000F /* SettingsView.swift */,
+				F00000000000000000000010 /* WirelessSetupSheet.swift */,
+			);
+			name = "Application Sources";
+			sourceTree = "<group>";
+		};
+		G00000000000000000000003 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000102 /* Info.plist */,
+				F00000000000000000000100 /* Assets.xcassets */,
+				F00000000000000000000101 /* PrivacyInfo.xcprivacy */,
+			);
+			name = Configuration;
+			sourceTree = "<group>";
+		};
+		G00000000000000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000200 /* TetherPane.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		T00000000000000000000001 /* TetherPane */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C00000000000000000000002 /* Build configuration list for PBXNativeTarget "TetherPane" */;
+			buildPhases = (
+				P00000000000000000000001 /* Sources */,
+				P00000000000000000000002 /* Frameworks */,
+				P00000000000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TetherPane;
+			packageProductDependencies = (
+				L00000000000000000000101 /* AirDroidDomain */,
+				L00000000000000000000102 /* AirDroidScrcpy */,
+			);
+			productName = TetherPane;
+			productReference = F00000000000000000000200 /* TetherPane.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		Q00000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					T00000000000000000000001 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = C00000000000000000000001 /* Build configuration list for PBXProject "TetherPane" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = G00000000000000000000001;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				L00000000000000000000001 /* XCLocalSwiftPackageReference "." */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = G00000000000000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				T00000000000000000000001 /* TetherPane */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		P00000000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B00000000000000000000100 /* Assets.xcassets in Resources */,
+				B00000000000000000000101 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		P00000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B00000000000000000000001 /* AirDroidMacApp.swift in Sources */,
+				B00000000000000000000002 /* ControlCenterStore.swift in Sources */,
+				B00000000000000000000003 /* DeveloperToolInstallationGuidance.swift in Sources */,
+				B00000000000000000000004 /* LiveDeviceDiscovery.swift in Sources */,
+				B00000000000000000000005 /* LiveMirroringEngine.swift in Sources */,
+				B00000000000000000000006 /* LivePairingClient.swift in Sources */,
+				B00000000000000000000007 /* LiveWirelessConnectionClient.swift in Sources */,
+				B00000000000000000000008 /* RecordingDestination.swift in Sources */,
+				B00000000000000000000009 /* UIFixtureConfiguration.swift in Sources */,
+				B0000000000000000000000A /* AdvancedInspector.swift in Sources */,
+				B0000000000000000000000B /* ControlCenterView.swift in Sources */,
+				B0000000000000000000000C /* DeviceSourceList.swift in Sources */,
+				B0000000000000000000000D /* NumberedSetupStep.swift in Sources */,
+				B0000000000000000000000E /* OneDeviceWorkspaceView.swift in Sources */,
+				B0000000000000000000000F /* SettingsView.swift in Sources */,
+				B00000000000000000000010 /* WirelessSetupSheet.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D00000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		D00000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		D00000000000000000000101 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Configuration/macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.facundopri.tetherpane;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+			};
+			name = Debug;
+		};
+		D00000000000000000000102 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Configuration/macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.facundopri.tetherpane;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C00000000000000000000001 /* Build configuration list for PBXProject "TetherPane" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D00000000000000000000001 /* Debug */,
+				D00000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C00000000000000000000002 /* Build configuration list for PBXNativeTarget "TetherPane" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D00000000000000000000101 /* Debug */,
+				D00000000000000000000102 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		L00000000000000000000001 /* XCLocalSwiftPackageReference "." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = .;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		L00000000000000000000101 /* AirDroidDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = L00000000000000000000001 /* XCLocalSwiftPackageReference "." */;
+			productName = AirDroidDomain;
+		};
+		L00000000000000000000102 /* AirDroidScrcpy */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = L00000000000000000000001 /* XCLocalSwiftPackageReference "." */;
+			productName = AirDroidScrcpy;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = Q00000000000000000000001 /* Project object */;
+}

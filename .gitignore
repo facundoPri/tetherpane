@@ -9,3 +9,12 @@ apps/android/local.properties
 apps/android/.idea/
 *.iml
 artifacts/
+DerivedData/
+*.xcarchive
+*.dmg
+*.pkg
+*.p12
+*.cer
+*.provisionprofile
+AuthKey_*.p8
+.env

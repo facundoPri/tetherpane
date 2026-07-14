@@ -1,0 +1,36 @@
+name: Feature request
+description: Propose a focused improvement to the one-device control center.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is difficult or unclear today?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the user-visible result rather than an implementation.
+    validations:
+      required: true
+  - type: dropdown
+    id: route
+    attributes:
+      label: Connection route
+      options:
+        - All routes
+        - Direct USB
+        - Secure Wireless Debugging
+        - USB-assisted Wi-Fi until restart
+        - Device list and management
+        - Mirroring session
+        - Advanced details
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety and identity considerations
+      description: Explain any impact on endpoint targeting, authorization, or physical-device association.

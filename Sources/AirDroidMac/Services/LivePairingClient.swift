@@ -4,10 +4,21 @@ import Foundation
 
 enum LivePairingClient {
     static func make() -> any PairingClient {
+        if UIFixture.active != nil {
+            return UIFixturePairingClient()
+        }
         guard let adbPath = DeveloperToolPathResolver.adbPath() else {
-            return UnavailablePairingClient(message: "ADB is not installed. Run make bootstrap or set ADB_PATH.")
+            return UnavailablePairingClient(
+                message: DeveloperToolInstallationGuidance.adbUnavailable
+            )
         }
         return ADBPairingClient(adbPath: adbPath, runner: ProcessCommandRunner())
+    }
+}
+
+private struct UIFixturePairingClient: PairingClient {
+    func pair(candidate: PairingCandidate, code: String) throws {
+        throw UIFixtureActionError()
     }
 }
 

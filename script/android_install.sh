@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.sh
 source "$SCRIPT_DIR/common.sh"
 
-PACKAGE_NAME="com.facundopri.airdroid.companion"
+PACKAGE_NAME="com.facundopri.tetherpane.companion"
 SERIAL=""
 
 usage() {

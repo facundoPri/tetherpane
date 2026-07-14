@@ -1,4 +1,4 @@
-package com.facundopri.airdroid.companion
+package com.facundopri.tetherpane.companion
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

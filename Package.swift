@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "AirDroidMac",
+    name: "TetherPane",
     platforms: [.macOS(.v26)],
     products: [
         .library(name: "AirDroidDomain", targets: ["AirDroidDomain"]),
         .library(name: "AirDroidScrcpy", targets: ["AirDroidScrcpy"]),
-        .executable(name: "AirDroidMac", targets: ["AirDroidMac"]),
+        .executable(name: "TetherPane", targets: ["AirDroidMac"]),
         .executable(name: "AirDroidMacSeamTests", targets: ["AirDroidMacSeamTests"]),
     ],
     targets: [

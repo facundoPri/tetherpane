@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a reproducible TetherPane problem.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Remove pairing codes, ADB keys, device recordings, and other secrets before submitting.
+  - type: input
+    id: version
+    attributes:
+      label: TetherPane version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: route
+    attributes:
+      label: Connection route
+      options:
+        - Direct USB
+        - Secure Wireless Debugging
+        - USB-assisted Wi-Fi until restart
+        - Unclassified wireless
+        - No device connected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Include the exact action sequence and whether the endpoint was selected explicitly.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: macOS version, Mac architecture, Android version, device model, ADB version, and scrcpy version.
+    validations:
+      required: true

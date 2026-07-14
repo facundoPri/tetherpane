@@ -4,10 +4,23 @@ import Foundation
 
 enum LiveDeviceDiscovery {
     static func make() -> any DeviceDiscovery {
+        if let fixture = UIFixture.active {
+            return FixtureDeviceDiscovery(snapshot: fixture.scenario.discoverySnapshot)
+        }
         guard let adbPath = DeveloperToolPathResolver.adbPath() else {
-            return UnavailableDeviceDiscovery(message: "ADB is not installed. Run make bootstrap or set ADB_PATH.")
+            return UnavailableDeviceDiscovery(
+                message: DeveloperToolInstallationGuidance.adbUnavailable
+            )
         }
         return ADBDeviceDiscovery(adbPath: adbPath, runner: ProcessCommandRunner())
+    }
+}
+
+private struct FixtureDeviceDiscovery: DeviceDiscovery {
+    let snapshot: DeviceDiscoverySnapshot
+
+    func discover() throws -> DeviceDiscoverySnapshot {
+        snapshot
     }
 }
 

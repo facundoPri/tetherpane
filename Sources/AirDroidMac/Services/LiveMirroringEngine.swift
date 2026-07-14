@@ -5,10 +5,35 @@ import Foundation
 @MainActor
 enum LiveMirroringEngine {
     static func make() -> any MirroringEngine {
+        if UIFixture.active != nil {
+            return UIFixtureMirroringEngine()
+        }
         guard let scrcpyPath = DeveloperToolPathResolver.scrcpyPath() else {
-            return UnavailableMirroringEngine(message: "scrcpy 4.1 is not installed. Run make doctor and set SCRCPY_PATH if needed.")
+            return UnavailableMirroringEngine(
+                message: DeveloperToolInstallationGuidance.scrcpyUnavailable
+            )
         }
         return ScrcpyMirroringEngine(scrcpyPath: scrcpyPath, launcher: FoundationProcessLauncher())
+    }
+}
+
+@MainActor
+private final class UIFixtureMirroringEngine: MirroringEngine {
+    private(set) var state: MirroringSessionState = .idle
+    var stateDidChange: ((MirroringSessionState) -> Void)?
+    private(set) var diagnostics = ScrcpyDiagnostics()
+    var diagnosticsDidChange: ((ScrcpyDiagnostics) -> Void)?
+
+    func start(configuration: MirroringConfiguration) async throws -> ScrcpyInvocation {
+        let message = UIFixtureActionError().localizedDescription
+        state = .failed(message)
+        stateDidChange?(state)
+        throw UIFixtureActionError()
+    }
+
+    func stop() async {
+        state = .stopped
+        stateDidChange?(state)
     }
 }
 
@@ -24,12 +49,12 @@ private final class UnavailableMirroringEngine: MirroringEngine {
         self.message = message
     }
 
-    func start(configuration: MirroringConfiguration) throws -> ScrcpyInvocation {
+    func start(configuration: MirroringConfiguration) async throws -> ScrcpyInvocation {
         transition(to: .failed(message))
         throw MirroringUnavailableError(message: message)
     }
 
-    func stop() {
+    func stop() async {
         transition(to: .stopped)
     }
 

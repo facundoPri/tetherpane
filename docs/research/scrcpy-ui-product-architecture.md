@@ -3,6 +3,8 @@
 Research date: 2026-07-13  
 Decision scope: a polished macOS scrcpy client, a future Android companion, Basic and Advanced modes, and a monorepo that can grow into broader Android-to-Mac continuity.
 
+> **Status update — 2026-07-14:** The current stock-scrcpy product is intentionally SwiftUI-only at runtime; neither supported connection route depends on an Android companion. Earlier statements below about a companion-led product shape are historical future context, not a current requirement. The earlier claim that secure pairing remains until explicit revocation is also superseded: Android may expire inactive host authorization, so re-pairing is a supported recovery path. See [Stock scrcpy 4.1 over Android Wireless Debugging](stock-scrcpy-wireless-debugging.md) for the current security and lifecycle contract.
+
 ## Recommendation
 
 Build the production applications natively in one monorepo:
@@ -20,7 +22,7 @@ Vercel Labs Native SDK is a genuine native toolkit and an interesting Mac experi
 
 Stock scrcpy does **not** work through permissions granted to an installed Android companion. It pushes its server to the device through ADB and starts it as Android's privileged `shell` user. This is what enables high-performance screen/audio capture and broad input injection without root or a permanently installed phone app. [scrcpy overview](https://github.com/Genymobile/scrcpy), [scrcpy developer guide](https://github.com/Genymobile/scrcpy/blob/master/doc/develop.md)
 
-For Wi-Fi use on Android 11+, the user must enable Developer Options and Wireless Debugging, then authorize the Mac using Android's pairing UI. The product can make this a clear, guided flow and can discover devices without asking for an IP address, but an ordinary Android app cannot silently enable or authorize ADB. Android's current documentation says pairing is retained until explicitly forgotten/revoked. Android 17 with ADB 37 adds automatic reconnection when the device returns to a trusted Wireless Debugging network. [Android wireless debugging](https://developer.android.com/studio/run/device#wireless)
+For Wi-Fi use on Android 11+, the user must enable Developer Options and Wireless Debugging, then authorize the Mac using Android's pairing UI. The product can make this a clear, guided flow and can discover devices without asking for an IP address, but an ordinary Android app cannot silently enable or authorize ADB. Pairing is normally remembered, but Android may expire inactive authorization or the user may revoke it; the product therefore keeps re-pairing as an ordinary recovery path. Android 17 with ADB 37 adds automatic reconnection when the device returns to a trusted Wireless Debugging network. [Android wireless debugging](https://developer.android.com/studio/run/device#wireless)
 
 The honest scrcpy-first promise is therefore:
 
@@ -118,7 +120,7 @@ Do not share UI merely because the applications occupy the same repository. The 
 
 ## Recommended next decisions and milestones
 
-1. **Resolve the product name.** AirDroid is already the name of an established Android remote-access/file-transfer product from Sand Studio, with Mac clients and substantially overlapping functionality. Treat the current name as a codename and perform a proper name/trademark check before publishing. [existing AirDroid product](https://www.airdroid.com/about-us/), [official downloads](https://www.airdroid.com/download/)
+1. **Resolve the product name.** The former AirDroid codename conflicts with an established Android remote-access/file-transfer product from Sand Studio. The public working name is now TetherPane; complete formal trademark clearance before a commercial 1.0 release. [existing AirDroid product](https://www.airdroid.com/about-us/), [official downloads](https://www.airdroid.com/download/)
 2. **Approve the onboarding contract:** the first release is scrcpy-first and requires a guided one-time Wireless Debugging setup; it does not promise zero Developer Options.
 3. **Write two short decision records:** native apps in a monorepo, and an engine boundary with pinned scrcpy 4.1.
 4. **Design the connection state machine and onboarding screens:** new device, discovered, needs pairing, authorized, connected, mirroring, reconnecting, unsupported, and actionable failure states.
@@ -143,4 +145,3 @@ Do not share UI merely because the applications occupy the same repository. The 
 - [Apple continuity capability benchmark](apple-continuity-capabilities.md)
 - [Vercel Native SDK fit](vercel-native-apps-fit.md)
 - [Tauri and scrcpy stack options](tauri-scrcpy-stack-options.md)
-

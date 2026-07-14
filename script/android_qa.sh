@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.sh
 source "$SCRIPT_DIR/common.sh"
 
-PACKAGE_NAME="com.facundopri.airdroid.companion"
+PACKAGE_NAME="com.facundopri.tetherpane.companion"
 SERIAL=""
 
 usage() {
@@ -40,7 +40,7 @@ adb="$(resolve_adb)" || {
   exit 1
 }
 serial="$(require_exact_authorized_device "$adb" "$SERIAL")"
-artifacts_dir="$(mktemp -d "${TMPDIR:-/tmp}/airdroid-android-qa.XXXXXX")"
+artifacts_dir="$(mktemp -d "${TMPDIR:-/tmp}/tetherpane-android-qa.XXXXXX")"
 
 printf 'QA artifacts: %s\n' "$artifacts_dir"
 printf 'Target serial: %s\n' "$serial"

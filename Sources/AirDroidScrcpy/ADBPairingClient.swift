@@ -44,7 +44,6 @@ public struct ADBPairingClient<Runner: StandardInputCommandRunning>: PairingClie
     }
 
     private func endpoint(for candidate: PairingCandidate) -> String {
-        let host = candidate.host.contains(":") ? "[\(candidate.host)]" : candidate.host
-        return "\(host):\(candidate.port)"
+        candidate.endpoint.adbAddress
     }
 }

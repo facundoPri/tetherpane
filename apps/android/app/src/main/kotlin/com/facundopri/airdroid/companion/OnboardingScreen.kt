@@ -1,4 +1,4 @@
-package com.facundopri.airdroid.companion
+package com.facundopri.tetherpane.companion
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +26,7 @@ fun OnboardingScreen(
     onOpenDeveloperOptions: () -> Unit,
 ) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text("AirDroid Companion") }) },
+        topBar = { TopAppBar(title = { Text("TetherPane Companion") }) },
     ) { contentPadding ->
         OnboardingContent(
             state = state,

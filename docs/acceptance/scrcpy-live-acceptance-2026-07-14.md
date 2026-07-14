@@ -9,7 +9,7 @@ Scope: the package-first SwiftUI macOS app controlling the separately windowed, 
 - ADB 37.0.1.
 - scrcpy 4.1 from Homebrew.
 - Motorola edge 40 pro, Android 16 / API 36, authorized over USB.
-- The same phone was later available through remembered Wireless Debugging and the USB-bootstrapped classic TCP/IP endpoint `192.168.1.3:5555`.
+- The same phone was later available through remembered Wireless Debugging and the USB-bootstrapped classic TCP/IP endpoint represented here by the documentation-only address `192.0.2.44:5555`.
 
 ## Passed UI sessions
 
@@ -24,7 +24,7 @@ The running child used the selected exact serial plus:
 --max-size=1280
 --max-fps=60
 --video-bit-rate=8M
---record=<Movies/AirDroid/timestamped-file.mp4>
+--record=<Movies/TetherPane/timestamped-file.mp4>
 ```
 
 There was no `--no-audio` argument. After Stop, the Advanced inspector showed the bounded process tail including stock scrcpy 4.1, the Metal renderer, a 576x1280 texture, recording start, and recording completion. `ffprobe` verified a playable MP4 containing H.264 video and 48 kHz stereo Opus audio.
@@ -45,7 +45,7 @@ The inspector reported a Metal texture of 864x1920 and retained the expected chi
 
 ### USB-bootstrapped Wi-Fi until restart
 
-The live Motorola used `wlan1` rather than `wlan0`. The adapter first checked the conventional interface, then correctly recovered `192.168.1.3` from `ip -4 route`, ran `adb -s <exact-usb-serial> tcpip 5555`, and connected `192.168.1.3:5555`.
+The live Motorola used `wlan1` rather than `wlan0`. The adapter first checked the conventional interface, then correctly recovered the phone's private address from `ip -4 route`, ran `adb -s <exact-usb-serial> tcpip 5555`, and connected the endpoint represented here as `192.0.2.44:5555`.
 
 The refreshed SwiftUI sidebar showed three distinct rows:
 
@@ -56,7 +56,7 @@ The refreshed SwiftUI sidebar showed three distinct rows:
 The real UI selected **Wi-Fi · until restart** and showed `Authorized via Wi-Fi until restart`. Mirror, Stop, and Reconnect were exercised through the UI. The live child process and Advanced inspector both proved the exact invocation began with:
 
 ```text
---serial=192.168.1.3:5555
+--serial=192.0.2.44:5555
 --video-codec=h264
 --max-size=1280
 --max-fps=60
@@ -85,5 +85,5 @@ No serial, recording path, device content, or raw process output is written to u
 
 ## Still pending
 
-- The cable remained physically attached during this acceptance. scrcpy demonstrably targeted `192.168.1.3:5555`, not USB, but final cable-removal acceptance still requires the user to unplug it and repeat Mirror once.
+- The cable remained physically attached during this acceptance. scrcpy demonstrably targeted the Wi-Fi endpoint represented here as `192.0.2.44:5555`, not USB, but final cable-removal acceptance still requires the user to unplug it and repeat Mirror once.
 - Wireless Debugging was already enabled and already authorized, so mDNS exposed `_adb-tls-connect._tcp` but no fresh `_adb-tls-pairing._tcp` service. Fresh six-digit pairing remains a separate manual acceptance if it is still required.

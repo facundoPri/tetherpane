@@ -1,4 +1,4 @@
-package com.facundopri.airdroid.companion
+package com.facundopri.tetherpane.companion
 
 import android.content.Context
 import android.content.Intent

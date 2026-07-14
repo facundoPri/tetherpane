@@ -1,4 +1,4 @@
-package com.facundopri.airdroid.companion
+package com.facundopri.tetherpane.companion
 
 data class OnboardingUiState(
     val title: String,

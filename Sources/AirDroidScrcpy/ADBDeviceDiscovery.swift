@@ -13,7 +13,7 @@ public struct CommandResult: Equatable, Sendable {
     }
 }
 
-public protocol CommandRunning {
+public protocol CommandRunning: Sendable {
     func run(executable: String, arguments: [String]) throws -> CommandResult
 }
 
@@ -47,16 +47,26 @@ public struct ADBDeviceDiscovery<Runner: CommandRunning>: DeviceDiscovery {
 
     public func discover() throws -> DeviceDiscoverySnapshot {
         let devices = try command(arguments: ["devices", "-l"])
-        let mdns = try command(arguments: ["mdns", "services"])
-        let wirelessConnectionCandidates = parseWirelessConnectionCandidates(mdns.stdout)
+        let mdns: CommandResult?
+        let wirelessDiscoveryWarning: String?
+        do {
+            mdns = try command(arguments: ["mdns", "services"])
+            wirelessDiscoveryWarning = nil
+        } catch {
+            mdns = nil
+            wirelessDiscoveryWarning = error.localizedDescription
+        }
+        let mdnsOutput = mdns?.stdout ?? ""
+        let wirelessConnectionCandidates = parseWirelessConnectionCandidates(mdnsOutput)
 
         return DeviceDiscoverySnapshot(
             devices: removeDuplicateWirelessAliases(
                 from: parseDevices(devices.stdout),
                 candidates: wirelessConnectionCandidates
             ),
-            pairingCandidates: parsePairingCandidates(mdns.stdout),
-            wirelessConnectionCandidates: wirelessConnectionCandidates
+            pairingCandidates: parsePairingCandidates(mdnsOutput),
+            wirelessConnectionCandidates: wirelessConnectionCandidates,
+            wirelessDiscoveryWarning: wirelessDiscoveryWarning
         )
     }
 
@@ -183,8 +193,7 @@ public struct ADBDeviceDiscovery<Runner: CommandRunning>: DeviceDiscovery {
     }
 
     private func endpoint(host: String, port: Int) -> String {
-        let formattedHost = host.contains(":") ? "[\(host)]" : host
-        return "\(formattedHost):\(port)"
+        ADBNetworkEndpoint(host: host, port: port).adbAddress
     }
 
     private func endpoint(from value: String) -> (host: String, port: Int)? {
@@ -237,7 +246,14 @@ public struct ProcessCommandRunner: StandardInputCommandRunning {
             stdin.fileHandleForWriting.write(Data(standardInput.utf8))
             try stdin.fileHandleForWriting.close()
         }
-        process.waitUntilExit()
+        while process.isRunning {
+            if Task.isCancelled {
+                process.terminate()
+                process.waitUntilExit()
+                throw CancellationError()
+            }
+            Thread.sleep(forTimeInterval: 0.02)
+        }
 
         return CommandResult(
             stdout: String(decoding: stdout.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self),

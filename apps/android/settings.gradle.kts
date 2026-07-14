@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AirDroidAndroid"
+rootProject.name = "TetherPaneAndroid"
 include(":app")

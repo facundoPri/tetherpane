@@ -1,4 +1,4 @@
-package com.facundopri.airdroid.companion
+package com.facundopri.tetherpane.companion
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

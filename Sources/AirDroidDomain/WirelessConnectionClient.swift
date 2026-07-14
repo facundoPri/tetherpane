@@ -6,7 +6,7 @@ public struct WirelessConnection: Equatable, Sendable {
     }
 }
 
-public protocol WirelessConnectionClient {
+public protocol WirelessConnectionClient: Sendable {
     /// Connects one mDNS-discovered Wireless Debugging endpoint and returns its exact ADB serial.
     func connect(candidate: WirelessConnectionCandidate) throws -> WirelessConnection
 
@@ -18,6 +18,11 @@ public protocol WirelessConnectionClient {
     /// Android remains responsible for every visible setting change and authorization decision.
     func openDeveloperOptions(device: DeviceIdentity) throws
 
-    /// Closes one device's classic TCP/IP listener by restarting adbd in USB mode.
-    func disableTCPIP(device: DeviceIdentity) throws
+    /// Closes one proven classic TCP/IP listener, or conservatively restarts adbd through its
+    /// exact USB source after an interrupted setup. Only network routes are disconnected.
+    func disableTCPIP(endpoint: ADBEndpoint) throws
+
+    /// Disconnects one exact secure or unclassified wireless ADB endpoint on this Mac. This does
+    /// not revoke Android's Wireless Debugging authorization or change a setting on the phone.
+    func disconnect(endpoint: ADBEndpoint) throws
 }

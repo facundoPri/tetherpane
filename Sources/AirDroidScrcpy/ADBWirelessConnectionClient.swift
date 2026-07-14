@@ -6,6 +6,8 @@ public enum ADBWirelessConnectionClientError: LocalizedError {
     case wifiAddressUnavailable
     case tcpipEnablementFailed
     case tcpipDisablementFailed
+    case disconnectUnsupported
+    case disconnectFailed
     case developerOptionsUnavailable
 
     public var errorDescription: String? {
@@ -18,6 +20,10 @@ public enum ADBWirelessConnectionClientError: LocalizedError {
             "Could not enable temporary ADB over TCP/IP on this USB device. Reauthorize USB debugging on the phone, then try again."
         case .tcpipDisablementFailed:
             "Could not turn off USB-assisted Wi-Fi on this phone. Keep the phone reachable, stop mirroring, then try again."
+        case .disconnectUnsupported:
+            "This connection cannot be disconnected here. Unplug USB connections, or use Turn Off for USB-assisted Wi-Fi."
+        case .disconnectFailed:
+            "Could not disconnect this wireless endpoint on the Mac. It remains authorized in Android and may reconnect while Wireless Debugging is enabled."
         case .developerOptionsUnavailable:
             "Could not open Developer Options on this device. Unlock the phone and open Settings → System → Developer options manually."
         }
@@ -94,18 +100,35 @@ public struct ADBWirelessConnectionClient<Runner: CommandRunning>: WirelessConne
         }
     }
 
-    public func disableTCPIP(device: DeviceIdentity) throws {
+    public func disableTCPIP(endpoint: ADBEndpoint) throws {
         let result = try runner.run(
             executable: adbPath,
-            arguments: ["-s", device.serial, "usb"]
+            arguments: ["-s", endpoint.identity.serial, "usb"]
         )
         guard commandSucceeded(result) else {
             throw ADBWirelessConnectionClientError.tcpipDisablementFailed
         }
-        _ = try? runner.run(
+        if endpoint.route != .directUSB {
+            _ = try? runner.run(
+                executable: adbPath,
+                arguments: ["disconnect", endpoint.identity.serial]
+            )
+        }
+    }
+
+    public func disconnect(endpoint: ADBEndpoint) throws {
+        guard endpoint.route == .secureWirelessDebugging
+                || endpoint.route == .unclassifiedWireless
+        else {
+            throw ADBWirelessConnectionClientError.disconnectUnsupported
+        }
+        let result = try runner.run(
             executable: adbPath,
-            arguments: ["disconnect", device.serial]
+            arguments: ["disconnect", endpoint.identity.serial]
         )
+        guard commandSucceeded(result) else {
+            throw ADBWirelessConnectionClientError.disconnectFailed
+        }
     }
 
     private func connect(serial: String) throws -> Bool {
@@ -162,7 +185,6 @@ public struct ADBWirelessConnectionClient<Runner: CommandRunning>: WirelessConne
     }
 
     private func endpoint(host: String, port: Int) -> String {
-        let formattedHost = host.contains(":") ? "[\(host)]" : host
-        return "\(formattedHost):\(port)"
+        ADBNetworkEndpoint(host: host, port: port).adbAddress
     }
 }

@@ -2,7 +2,7 @@ import AirDroidDomain
 import Foundation
 import OSLog
 
-public protocol RunningProcess: AnyObject {
+public protocol RunningProcess: AnyObject, Sendable {
     var isRunning: Bool { get }
     func terminate()
     func observeTermination(_ handler: @escaping @Sendable (Int32) -> Void)
@@ -22,8 +22,8 @@ public protocol MirroringEngine: AnyObject {
     var stateDidChange: ((MirroringSessionState) -> Void)? { get set }
     var diagnostics: ScrcpyDiagnostics { get }
     var diagnosticsDidChange: ((ScrcpyDiagnostics) -> Void)? { get set }
-    func start(configuration: MirroringConfiguration) throws -> ScrcpyInvocation
-    func stop()
+    func start(configuration: MirroringConfiguration) async throws -> ScrcpyInvocation
+    func stop() async
 }
 
 public enum ScrcpyMirroringEngineError: LocalizedError {
@@ -48,7 +48,7 @@ public final class ScrcpyMirroringEngine<Launcher: ProcessLaunching>: MirroringE
     private let launcher: Launcher
     private let commandBuilder: ScrcpyCommandBuilder
     private let diagnosticLineLimit: Int
-    private let logger = Logger(subsystem: "com.facundopri.airdroid.spike", category: "Mirroring")
+    private let logger = Logger(subsystem: "com.facundopri.tetherpane", category: "Mirroring")
     private var runningProcess: (any RunningProcess)?
     private var activeSessionID: UUID?
     private var stoppingSessionID: UUID?
@@ -66,7 +66,7 @@ public final class ScrcpyMirroringEngine<Launcher: ProcessLaunching>: MirroringE
         self.diagnosticLineLimit = max(1, diagnosticLineLimit)
     }
 
-    public func start(configuration: MirroringConfiguration) throws -> ScrcpyInvocation {
+    public func start(configuration: MirroringConfiguration) async throws -> ScrcpyInvocation {
         guard runningProcess == nil else {
             throw ScrcpyMirroringEngineError.sessionAlreadyRunning
         }
@@ -82,13 +82,37 @@ public final class ScrcpyMirroringEngine<Launcher: ProcessLaunching>: MirroringE
 
         do {
             let sessionID = UUID()
-            let process = try launcher.launch(
-                executable: scrcpyPath,
-                arguments: invocation.arguments
-            ) { [weak self] output in
+            let launcher = self.launcher
+            let scrcpyPath = self.scrcpyPath
+            let outputHandler: @Sendable (ScrcpyProcessOutput) -> Void = { [weak self] output in
                 Task { @MainActor [weak self] in
                     self?.handleOutput(sessionID: sessionID, output: output)
                 }
+            }
+            let worker = Task.detached(priority: .userInitiated) {
+                let process = try launcher.launch(
+                    executable: scrcpyPath,
+                    arguments: invocation.arguments,
+                    outputHandler: outputHandler
+                )
+                if Task.isCancelled {
+                    if process.isRunning {
+                        process.terminate()
+                    }
+                    throw CancellationError()
+                }
+                return process
+            }
+            let process = try await withTaskCancellationHandler {
+                try await worker.value
+            } onCancel: {
+                worker.cancel()
+            }
+            if Task.isCancelled {
+                if process.isRunning {
+                    process.terminate()
+                }
+                throw CancellationError()
             }
             runningProcess = process
             activeSessionID = sessionID
@@ -100,6 +124,10 @@ public final class ScrcpyMirroringEngine<Launcher: ProcessLaunching>: MirroringE
             transition(to: .mirroring(configuration.device))
             logger.info("scrcpy session started")
             return invocation
+        } catch is CancellationError {
+            activeSessionID = nil
+            transition(to: .stopped)
+            throw CancellationError()
         } catch {
             activeSessionID = nil
             transition(to: .failed("Could not start scrcpy: \(error.localizedDescription)"))
@@ -108,7 +136,7 @@ public final class ScrcpyMirroringEngine<Launcher: ProcessLaunching>: MirroringE
         }
     }
 
-    public func stop() {
+    public func stop() async {
         guard let process = runningProcess else {
             transition(to: .stopped)
             return
@@ -119,7 +147,9 @@ public final class ScrcpyMirroringEngine<Launcher: ProcessLaunching>: MirroringE
         activeSessionID = nil
         runningProcess = nil
         if process.isRunning {
-            process.terminate()
+            await Task.detached(priority: .userInitiated) {
+                process.terminate()
+            }.value
         }
         transition(to: .stopped)
         logger.info("scrcpy session stopped")

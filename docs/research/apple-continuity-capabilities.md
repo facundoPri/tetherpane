@@ -1,4 +1,4 @@
-# Apple continuity capabilities relevant to AirDroid
+# Apple continuity capabilities relevant to TetherPane
 
 Research date: 2026-07-13  
 Scope: current, practical iPhone-to-Mac capabilities. Sources are limited to Apple Support, Apple user guides, and Apple Platform Security.
@@ -64,7 +64,7 @@ Both devices need Wi-Fi and Bluetooth on and must be nearby. The iPhone needs a 
 
 ## Secondary conveniences worth knowing about
 
-These are real iPhone-Mac capabilities, but they are less central to AirDroid's stated problem:
+These are real iPhone-Mac capabilities, but they are less central to TetherPane's stated problem:
 
 - **iPhone widgets on Mac:** macOS Sonoma 14+ can display widgets from an iOS 17+ iPhone without installing the corresponding Mac app. Interacting with one can open the iPhone app in iPhone Mirroring on current systems. [Continuity feature matrix](https://support.apple.com/en-us/108046), [Mac iPhone Mirroring guide](https://support.apple.com/guide/mac-help/control-your-iphone-from-your-mac-mchl444d53a6/26/mac/26)
 - **Continuity Sketch and Markup:** use iPhone or iPad to draw a sketch or mark up a Mac document and see the result on Mac. Baseline support is iOS 13 / macOS Catalina on Apple's listed hardware. [Continuity feature matrix](https://support.apple.com/en-us/108046)
@@ -89,7 +89,7 @@ These are real iPhone-Mac capabilities, but they are less central to AirDroid's 
 
 ## Product-relevant conclusions
 
-- Apple's closest analogue to the desired AirDroid experience is not AirDrop alone; it is the combination of iPhone Mirroring, mirrored notifications, AirDrop, Universal Clipboard, Continuity Camera, message/call relay, and account-based pairing.
+- Apple's closest analogue to the desired TetherPane experience is not AirDrop alone; it is the combination of iPhone Mirroring, mirrored notifications, AirDrop, Universal Clipboard, Continuity Camera, message/call relay, and account-based pairing.
 - A credible Android-Mac equivalent should treat discovery, authentication, control input, real-time media, bulk transfer, clipboard, and background notifications as separate services behind one paired-device experience.
 - “No IP address” discovery is achieved through local service discovery/proximity signaling, while a trusted device identity eliminates repeated manual connection steps.
 - Wi-Fi mirroring needs an explicit concurrency/resource policy. Apple blocks combinations such as Mirroring with AirPlay/Sidecar and Continuity Camera with AirPlay/Sidecar, and it limits live use to one phone-Mac pair.

@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="false"
-        android:label="AirDroid Companion"
+        android:label="TetherPane Companion"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AirDroid">
+        android:theme="@style/Theme.TetherPane">
         <activity
             android:name=".MainActivity"
             android:exported="true">

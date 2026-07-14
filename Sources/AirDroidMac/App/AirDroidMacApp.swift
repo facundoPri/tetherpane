@@ -2,17 +2,20 @@ import AppKit
 import SwiftUI
 
 @main
-struct AirDroidMacApp: App {
+struct TetherPaneApp: App {
     @NSApplicationDelegateAdaptor(AppActivationDelegate.self) private var appActivationDelegate
     @State private var store = ControlCenterStore(
         discovery: LiveDeviceDiscovery.make(),
         pairing: LivePairingClient.make(),
         wirelessConnection: LiveWirelessConnectionClient.make(),
-        mirroring: LiveMirroringEngine.make()
+        mirroring: LiveMirroringEngine.make(),
+        uiFixture: UIFixture.active,
+        legacyRiskStore: LegacyRiskStoreFactory.make(for: UIFixture.active),
+        deviceDirectoryStore: DeviceDirectoryStoreFactory.make(for: UIFixture.active)
     )
 
     var body: some Scene {
-        WindowGroup("AirDroid", id: "control-center") {
+        WindowGroup("TetherPane", id: "control-center") {
             ControlCenterView(store: store)
         }
         .defaultSize(width: 980, height: 640)
@@ -23,6 +26,13 @@ struct AirDroidMacApp: App {
 
         .commands {
             CommandMenu("Session") {
+                Button("Refresh Connections") {
+                    store.refreshDevices()
+                }
+                .keyboardShortcut("r")
+
+                Divider()
+
                 Button("Use Responsive Preset") {
                     store.selectedPreset = .responsive
                 }
@@ -51,14 +61,14 @@ struct AirDroidMacApp: App {
                 Button("Mirror Selected Device") {
                     store.toggleMirroring()
                 }
-                .keyboardShortcut("m")
-                .disabled(store.selectedDevice?.state != .authorized)
+                .keyboardShortcut("m", modifiers: [.command, .option])
+                .disabled(!store.canMirrorSelectedDevice)
 
                 Button("Reconnect Selected Device") {
                     store.reconnect()
                 }
-                .keyboardShortcut("m", modifiers: [.command, .shift])
-                .disabled(store.selectedDevice?.state != .authorized)
+                .keyboardShortcut("m", modifiers: [.command, .option, .shift])
+                .disabled(store.selectedAuthorizedEndpoint == nil)
 
                 Button("Stop Mirroring") {
                     store.stopMirroring()
