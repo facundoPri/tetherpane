@@ -274,6 +274,9 @@ private struct ConnectionChoiceCanvas<Content: View>: View {
     let subtitle: String
     @ViewBuilder let content: Content
 
+    @Environment(\.accessibilityReduceTransparency) private var systemReduceTransparency
+    @Environment(\.uiFixturePresentationProfile) private var uiFixturePresentationProfile
+
     init(
         systemImage: String,
         title: String,
@@ -305,15 +308,33 @@ private struct ConnectionChoiceCanvas<Content: View>: View {
                     }
                 }
 
-                content
-                    .padding(20)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .glassEffect(.regular, in: .rect(cornerRadius: 20))
+                contentSurface
             }
             .frame(maxWidth: 720, alignment: .leading)
             .padding(.horizontal, 36)
             .padding(.vertical, 32)
             .frame(maxWidth: .infinity)
         }
+    }
+
+    @ViewBuilder
+    private var contentSurface: some View {
+        let surface = content
+            .padding(20)
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+        if reduceTransparency {
+            surface.background(
+                .quaternary,
+                in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+            )
+        } else {
+            surface.glassEffect(.regular, in: .rect(cornerRadius: 20))
+        }
+    }
+
+    private var reduceTransparency: Bool {
+        uiFixturePresentationProfile.reduceTransparency
+            ?? systemReduceTransparency
     }
 }

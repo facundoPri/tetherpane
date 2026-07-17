@@ -51,7 +51,7 @@ The app looks for explicit `SCRCPY_PATH` / `ADB_PATH` overrides, standard Homebr
 
 ## Release packaging
 
-`TetherPane.xcodeproj` now owns the native macOS application target, shared scheme, app icon catalog, bundle settings, privacy manifest, hardened runtime, and Archive action. It consumes the existing `AirDroidDomain` and `AirDroidScrcpy` SwiftPM library products as local package dependencies instead of duplicating those source trees. SwiftPM remains the portable library and seam-test path during the migration.
+`TetherPane.xcodeproj` now owns the native macOS application target, shared scheme, app icon catalog, bundle settings, privacy manifest, hardened runtime, and Archive action. It consumes the existing `AirDroidDomain`, `AirDroidScrcpy`, and isolated `TetherPaneUIFixtureSupport` SwiftPM library products as local package dependencies instead of duplicating those source trees. SwiftPM remains the portable library and seam-test path during the migration.
 
 `script/package_macos.sh` remains the single bundle-staging interface. With full Xcode selected it builds the native `TetherPane` scheme; on a Command Line Tools-only machine it uses the SwiftPM fallback. Both paths inject release metadata, apply a hardened signature, verify the result, and optionally create a ZIP. `script/build_and_run.sh` uses the same staging path, so local runs do not drift from release metadata. See [the Xcode migration note](docs/XCODE_MIGRATION.md).
 
@@ -66,7 +66,7 @@ make macos-release \
   NOTARY_PROFILE=tetherpane-notary
 ```
 
-Universal builds require a full Xcode installation. The current machine has Command Line Tools only, so local validation produces an Apple-silicon artifact. See [the release runbook](docs/RELEASING.md) before publishing any asset.
+Universal builds require a selected, licensed full Xcode installation. A Command Line Tools-only or unselected-Xcode environment can validate the Apple-silicon SwiftPM fallback but cannot produce the public universal archive. See [the release runbook](docs/RELEASING.md) before publishing any asset.
 
 ## Device management
 
@@ -126,6 +126,7 @@ Sources/AirDroidDomain/       typed devices and session configuration
 Sources/AirDroidScrcpy/       scrcpy argument and process adapter seam
 Sources/AirDroidMac/          SwiftUI control center
 Sources/AirDroidMacSeamTests/ deterministic Swift seam test runner
+Sources/TetherPaneUIFixtureSupport/ isolated inert fixture identifiers and presentation profile
 engines/scrcpy/               pin and compatibility note
 script/                       developer, package, release, and verification commands
 ```
@@ -144,6 +145,8 @@ The Android versions are compatibility-first: AGP 9.2 requires Gradle 9.4.1+, Bu
 
 ## Testing seams
 
-Tests cross only these public seams: `ConnectionCoordinator`, `ConnectionEndpointClassifier`, `DeviceDirectory`, `DeviceDiscovery`, `PairingClient`, `WirelessConnectionClient`, `MirroringEngine`, `ScrcpyCommandBuilder`, optional Android onboarding/settings, and the root command interface. The coordinator exposes typed workspace, route provenance, scoped feedback, and stale-operation rejection. The directory reduces exact endpoint observations into connected, authorization-required, locally disconnected, and saved-offline rows without merging ambiguous physical identities. The classifier owns exact endpoint formatting and evidence precedence. System process, binary lookup, filesystem, and Android settings adapters are the true system edges; views consume typed state, not raw command output.
+Production-behavior tests cross only these public seams: `ConnectionCoordinator`, `ConnectionEndpointClassifier`, `DeviceDirectory`, `DeviceDiscovery`, `PairingClient`, `WirelessConnectionClient`, `MirroringEngine`, `ScrcpyCommandBuilder`, optional Android onboarding/settings, and the root command interface. The coordinator exposes typed workspace, route provenance, scoped feedback, and stale-operation rejection. The directory reduces exact endpoint observations into connected, authorization-required, locally disconnected, and saved-offline rows without merging ambiguous physical identities. The classifier owns exact endpoint formatting and evidence precedence. System process, binary lookup, filesystem, and Android settings adapters are the true system edges; views consume typed state, not raw command output.
+
+Visual-QA fixture identifiers and their process-local presentation resolver live in `TetherPaneUIFixtureSupport`, not in the device/session domain. Its seam contract proves that appearance and accessibility overrides activate only for a recognized inert fixture.
 
 The active Command Line Tools-only Swift toolchain does not expose XCTest or Swift Testing, so the Swift seam contracts are a SwiftPM executable (`AirDroidMacSeamTests`) run by `make macos-test`. This is a real failing-process contract runner, not a zero-test `swift test` result. Full-Xcode CI also builds the shared native scheme through `make xcode-project-test`. The release pipeline has a separate integration contract at the root command seam; `make macos-release-test` verifies the final bundle and archive rather than shell implementation details.

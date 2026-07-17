@@ -1,26 +1,6 @@
 import AirDroidDomain
 import Foundation
-
-enum UIFixture: String {
-    case usbUnauthorized = "usb-unauthorized"
-    case usbReady = "usb-ready"
-    case multiUSBDistinct = "multi-usb-distinct"
-    case multiUSBAmbiguous = "multi-usb-ambiguous"
-    case usbWithWirelessWarning = "usb-with-wireless-warning"
-    case secureNearby = "secure-nearby"
-    case securePairing = "secure-pairing"
-    case legacyEnabling = "legacy-enabling"
-    case legacySafeToUnplug = "legacy-safe-to-unplug"
-    case deviceManagement = "device-management"
-    case secureDisconnected = "secure-disconnected"
-    case unclassifiedWireless = "unclassified-wireless"
-
-    static var active: UIFixture? {
-        let environment = ProcessInfo.processInfo.environment
-        return (environment["TETHERPANE_UI_FIXTURE"] ?? environment["AIRDROID_UI_FIXTURE"])
-            .flatMap(UIFixture.init(rawValue:))
-    }
-}
+import TetherPaneUIFixtureSupport
 
 struct UIFixtureStoreSeed {
     var savedRecords: [SavedDeviceRecord] = []

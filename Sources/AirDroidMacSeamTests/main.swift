@@ -1,6 +1,7 @@
 import AirDroidDomain
 import AirDroidScrcpy
 import Foundation
+import TetherPaneUIFixtureSupport
 
 private func expectEqual<T: Equatable>(_ actual: T, _ expected: T, _ message: String) {
     guard actual == expected else {
@@ -1532,3 +1533,59 @@ expectEqual(
 )
 
 print("PASS: Connection panels preserve route-specific security and management semantics")
+
+let accessibilityFixtureProfile = UIFixturePresentationProfile(environment: [
+    "TETHERPANE_UI_FIXTURE": "device-management",
+    "TETHERPANE_UI_APPEARANCE": "light",
+    "TETHERPANE_UI_REDUCE_MOTION": "true",
+    "TETHERPANE_UI_REDUCE_TRANSPARENCY": "1",
+])
+expectEqual(
+    accessibilityFixtureProfile.appearance,
+    .light,
+    "A visual QA fixture must be able to request Light appearance without changing macOS settings"
+)
+expectEqual(
+    accessibilityFixtureProfile.reduceMotion,
+    true,
+    "A visual QA fixture must be able to replace spring motion with its reduced-motion path"
+)
+expectEqual(
+    accessibilityFixtureProfile.reduceTransparency,
+    true,
+    "A visual QA fixture must be able to ask system materials for reduced transparency"
+)
+
+let normalLaunchPresentationProfile = UIFixturePresentationProfile(environment: [
+    "TETHERPANE_UI_APPEARANCE": "light",
+    "TETHERPANE_UI_REDUCE_MOTION": "true",
+])
+expectEqual(
+    normalLaunchPresentationProfile,
+    .system,
+    "Presentation overrides must not affect a normal launch"
+)
+
+let unknownFixturePresentationProfile = UIFixturePresentationProfile(environment: [
+    "TETHERPANE_UI_FIXTURE": "unknown-fixture",
+    "TETHERPANE_UI_APPEARANCE": "light",
+    "TETHERPANE_UI_REDUCE_TRANSPARENCY": "true",
+])
+expectEqual(
+    unknownFixturePresentationProfile,
+    .system,
+    "Presentation overrides must not activate for an unrecognized fixture"
+)
+
+let invalidAccessibilityFixtureProfile = UIFixturePresentationProfile(environment: [
+    "TETHERPANE_UI_FIXTURE": "device-management",
+    "TETHERPANE_UI_APPEARANCE": "sepia",
+    "TETHERPANE_UI_REDUCE_MOTION": "sometimes",
+])
+expectEqual(
+    invalidAccessibilityFixtureProfile,
+    .system,
+    "Unrecognized fixture values must preserve the user's real system presentation settings"
+)
+
+print("PASS: UI fixture presentation overrides are typed, opt-in, and system-preserving by default")

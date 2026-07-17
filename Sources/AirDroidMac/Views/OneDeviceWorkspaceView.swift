@@ -5,7 +5,8 @@ struct OneDeviceWorkspaceView: View {
     @Bindable var store: ControlCenterStore
     let openWirelessSetup: () -> Void
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.uiFixturePresentationProfile) private var uiFixturePresentationProfile
 
     var body: some View {
         ScrollView {
@@ -73,6 +74,10 @@ struct OneDeviceWorkspaceView: View {
             reduceMotion ? nil : .spring(response: 0.32, dampingFraction: 1),
             value: store.presentation.workspace
         )
+    }
+
+    private var reduceMotion: Bool {
+        uiFixturePresentationProfile.reduceMotion ?? systemReduceMotion
     }
 
     private var visibleNotice: ConnectionNotice? {

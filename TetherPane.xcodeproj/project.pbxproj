@@ -23,10 +23,12 @@
 		B0000000000000000000000E /* OneDeviceWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000000000000000000000E /* OneDeviceWorkspaceView.swift */; };
 		B0000000000000000000000F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000000000000000000000F /* SettingsView.swift */; };
 		B00000000000000000000010 /* WirelessSetupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000010 /* WirelessSetupSheet.swift */; };
+		B00000000000000000000011 /* UIFixturePresentationEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000011 /* UIFixturePresentationEnvironment.swift */; };
 		B00000000000000000000100 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000100 /* Assets.xcassets */; };
 		B00000000000000000000101 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000101 /* PrivacyInfo.xcprivacy */; };
 		B00000000000000000000200 /* AirDroidDomain in Frameworks */ = {isa = PBXBuildFile; productRef = L00000000000000000000101 /* AirDroidDomain */; };
 		B00000000000000000000201 /* AirDroidScrcpy in Frameworks */ = {isa = PBXBuildFile; productRef = L00000000000000000000102 /* AirDroidScrcpy */; };
+		B00000000000000000000202 /* TetherPaneUIFixtureSupport in Frameworks */ = {isa = PBXBuildFile; productRef = L00000000000000000000103 /* TetherPaneUIFixtureSupport */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +48,7 @@
 		F0000000000000000000000E /* OneDeviceWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/OneDeviceWorkspaceView.swift; sourceTree = SOURCE_ROOT; };
 		F0000000000000000000000F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/SettingsView.swift; sourceTree = SOURCE_ROOT; };
 		F00000000000000000000010 /* WirelessSetupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Views/WirelessSetupSheet.swift; sourceTree = SOURCE_ROOT; };
+		F00000000000000000000011 /* UIFixturePresentationEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AirDroidMac/Support/UIFixturePresentationEnvironment.swift; sourceTree = SOURCE_ROOT; };
 		F00000000000000000000100 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Configuration/macOS/Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		F00000000000000000000101 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Configuration/macOS/PrivacyInfo.xcprivacy; sourceTree = SOURCE_ROOT; };
 		F00000000000000000000102 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Configuration/macOS/Info.plist; sourceTree = SOURCE_ROOT; };
@@ -59,6 +62,7 @@
 			files = (
 				B00000000000000000000200 /* AirDroidDomain in Frameworks */,
 				B00000000000000000000201 /* AirDroidScrcpy in Frameworks */,
+				B00000000000000000000202 /* TetherPaneUIFixtureSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +97,7 @@
 				F0000000000000000000000E /* OneDeviceWorkspaceView.swift */,
 				F0000000000000000000000F /* SettingsView.swift */,
 				F00000000000000000000010 /* WirelessSetupSheet.swift */,
+				F00000000000000000000011 /* UIFixturePresentationEnvironment.swift */,
 			);
 			name = "Application Sources";
 			sourceTree = "<group>";
@@ -134,6 +139,7 @@
 			packageProductDependencies = (
 				L00000000000000000000101 /* AirDroidDomain */,
 				L00000000000000000000102 /* AirDroidScrcpy */,
+				L00000000000000000000103 /* TetherPaneUIFixtureSupport */,
 			);
 			productName = TetherPane;
 			productReference = F00000000000000000000200 /* TetherPane.app */;
@@ -210,6 +216,7 @@
 				B0000000000000000000000E /* OneDeviceWorkspaceView.swift in Sources */,
 				B0000000000000000000000F /* SettingsView.swift in Sources */,
 				B00000000000000000000010 /* WirelessSetupSheet.swift in Sources */,
+				B00000000000000000000011 /* UIFixturePresentationEnvironment.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +342,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = L00000000000000000000001 /* XCLocalSwiftPackageReference "." */;
 			productName = AirDroidScrcpy;
+		};
+		L00000000000000000000103 /* TetherPaneUIFixtureSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = L00000000000000000000001 /* XCLocalSwiftPackageReference "." */;
+			productName = TetherPaneUIFixtureSupport;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import TetherPaneUIFixtureSupport
 
 @main
 struct TetherPaneApp: App {
@@ -17,6 +18,11 @@ struct TetherPaneApp: App {
     var body: some Scene {
         WindowGroup("TetherPane", id: "control-center") {
             ControlCenterView(store: store)
+                .modifier(
+                    UIFixturePresentationModifier(
+                        profile: uiFixturePresentationProfile
+                    )
+                )
         }
         .defaultSize(width: 980, height: 640)
 
@@ -76,6 +82,35 @@ struct TetherPaneApp: App {
                 .keyboardShortcut(".")
                 .disabled(!store.isMirroring)
             }
+        }
+    }
+
+    private var uiFixturePresentationProfile: UIFixturePresentationProfile {
+        UIFixturePresentationProfile(
+            environment: ProcessInfo.processInfo.environment
+        )
+    }
+}
+
+private struct UIFixturePresentationModifier: ViewModifier {
+    let profile: UIFixturePresentationProfile
+
+    func body(content: Content) -> some View {
+        content
+            .preferredColorScheme(profile.appearance.colorScheme)
+            .environment(\.uiFixturePresentationProfile, profile)
+    }
+}
+
+private extension UIFixturePresentationProfile.Appearance {
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system:
+            nil
+        case .light:
+            .light
+        case .dark:
+            .dark
         }
     }
 }

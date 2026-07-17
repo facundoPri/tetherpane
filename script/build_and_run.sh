@@ -28,7 +28,23 @@ pkill -x "$APP_NAME" >/dev/null 2>&1 || true
 BUNDLE_ID="$MACOS_BUNDLE_IDENTIFIER"
 
 open_app() {
-  /usr/bin/open -n "$APP_BUNDLE"
+  local -a open_arguments=(-n)
+  local variable_name
+  local -a fixture_environment=(
+    TETHERPANE_UI_FIXTURE
+    AIRDROID_UI_FIXTURE
+    TETHERPANE_UI_APPEARANCE
+    TETHERPANE_UI_REDUCE_MOTION
+    TETHERPANE_UI_REDUCE_TRANSPARENCY
+  )
+
+  for variable_name in "${fixture_environment[@]}"; do
+    if [[ -n "${!variable_name:-}" ]]; then
+      open_arguments+=(--env "$variable_name=${!variable_name}")
+    fi
+  done
+
+  /usr/bin/open "${open_arguments[@]}" "$APP_BUNDLE"
 }
 
 case "$MODE" in
