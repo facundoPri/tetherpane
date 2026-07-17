@@ -1,6 +1,7 @@
 import AirDroidDomain
 import AirDroidScrcpy
 import Foundation
+import TetherPaneUIFixtureSupport
 
 enum LivePairingClient {
     static func make() -> any PairingClient {

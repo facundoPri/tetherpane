@@ -3,6 +3,7 @@ import AirDroidScrcpy
 import Foundation
 import Observation
 import OSLog
+import TetherPaneUIFixtureSupport
 
 private func performOffMain<T: Sendable>(
     _ operation: @escaping @Sendable () throws -> T

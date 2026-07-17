@@ -1,6 +1,7 @@
 import AirDroidDomain
 import AirDroidScrcpy
 import Foundation
+import TetherPaneUIFixtureSupport
 
 enum LiveDeviceDiscovery {
     static func make() -> any DeviceDiscovery {
